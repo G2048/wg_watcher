@@ -42,6 +42,7 @@ def watcher():
 
         if 62931 in ports:
             logging.info('Port 62931 is found')
+            ports.pop()
             time.sleep(3600)
             continue
         else:
