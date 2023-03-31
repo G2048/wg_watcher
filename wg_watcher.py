@@ -26,9 +26,9 @@ def demonification(fn):
 @demonification
 def watcher():
     udp_file = '/proc/net/udp'
-    ports = []
 
     while True:
+        ports = []
         with open(udp_file) as f:
             open_udp = f.readlines()
 
@@ -42,7 +42,6 @@ def watcher():
 
         if 62931 in ports:
             logging.info('Port 62931 is found')
-            ports.pop()
             time.sleep(3600)
             continue
         else:
