@@ -19,7 +19,7 @@ def demonification(fn):
             fn()
         else:
             logging.info('Exit!')
-            sys.exit(1)
+            sys.exit(0)
     return wrap
 
 
