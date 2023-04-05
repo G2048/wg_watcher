@@ -1,29 +1,17 @@
+# Usage: sudo python3 wg_watcher.py
+
 import logging
 import time
 import os
-import subprocess
 import sys
+import subprocess
+from demon import Daemon
 
 
-FORMAT = '%(asctime)s::%(levelname)s::%(message)s'
+FORMAT = '%(asctime)s::%(name)s::%(levelname)s::%(message)s'
 logging.basicConfig(filename='wg.log', filemode='w', format=FORMAT, level=logging.DEBUG)
 
 
-def demonification(fn):
-    def wrap(*args):
-        pid = os.fork()
-        logging.info(f'Pid is: {pid}')
-
-        if not pid:
-            logging.debug('Demon was created')
-            fn()
-        else:
-            logging.info('Exit!')
-            sys.exit(0)
-    return wrap
-
-
-@demonification
 def watcher():
     udp_file = '/proc/net/udp'
 
@@ -51,8 +39,12 @@ def watcher():
             logging.info(f'Code return: {code_return}')
 
 
+
+
 if __name__ == '__main__':
     if not os.getegid():
-        watcher()
+        filename = 'watcher'
+        d = Daemon(filename)
+        d.start(watcher)
     else:
         print('Get running with sudo!')
