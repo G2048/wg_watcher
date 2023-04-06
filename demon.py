@@ -27,6 +27,7 @@ class Daemon():
         pid = str(os.getpid())
         logging.info(f'Demon was created! Pid is: {pid}')
         open(self.pidfile, 'w').write(pid)
+        logging.debug(f'{self.pidfile}')
         atexit.register(self.delpid)
         signal.signal(signal.SIGCHLD, self.handle_signal)
 
@@ -40,7 +41,8 @@ class Daemon():
         os.dup2(so.fileno(), sys.stdout.fileno())
         os.dup2(se.fileno(), sys.stderr.fileno())
 
-        self.fn()
+        logging.debug(f'Start function {self.fn}')
+        self.fn(*self.fn_args)
 
 
     def delpid(self):
@@ -72,15 +74,17 @@ class Daemon():
             sys.exit(1)
 
 
-    def start(self, fn):
+    def start(self, fn, *args):
         """You must specify a function to be called when the daemon is started"""
 
         self.fn = fn
+        self.fn_args = args
         if os.path.exists(self.pidfile):
             logging.warning(f'{self.pidfile} already exists. Daemon is already running!')
             sys.stderr.write(f'{self.pidfile} already exists. Daemon is already running!\n')
             self.stop()
         else:
+            logging.debug(self.fn_args)
             self.demonification()
 
 
@@ -97,7 +101,7 @@ class Daemon():
         else:
             logging.warning('Pid file don\'t exist!')
             sys.stderr.write('Pid file don\'t exist!\n')
-            sys.exit(1)
+            return -1
 
 
         try:
