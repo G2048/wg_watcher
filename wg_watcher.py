@@ -1,11 +1,12 @@
 # Usage: sudo python3 wg_watcher.py
 
-import logging
+import logging.config
 import time
 import os
 import argparse
 import subprocess
 from demon import Daemon
+from settings import LogConfig
 
 
 def wg_stop(wg_port, wg_filename, wg_interface):
@@ -78,7 +79,11 @@ if __name__ == '__main__':
     if not os.getegid():
         FORMAT = '%(asctime)s::%(name)s::%(levelname)s::%(message)s'
         loglevel = 50 - wg_args.verbose * 10
-        logging.basicConfig(filename=f'{wg_args.filename}.log', filemode='w', format=FORMAT, level=loglevel)
+        LogConfig['handlers']['rotate']['filename'] = f'{wg_args.filename}.log'
+
+        logging.config.dictConfig(LogConfig)
+        logging.getLogger().level = loglevel
+
         logging.debug(wg_args)
 
         if wg_args.stop:
