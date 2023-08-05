@@ -1,5 +1,4 @@
 # Usage: sudo python3 wg_watcher.py
-
 import logging.config
 import time
 import os

@@ -4,7 +4,8 @@ import sys
 import argparse
 import atexit
 import signal
-import logging
+import logging.config
+from settings import LogConfig
 
 
 class Daemon():
@@ -135,10 +136,7 @@ if __name__ == '__main__':
     exgroup.add_argument('-k', '--kill', action='store', const='test', nargs='?', help='Specify a process name...')
     args = parser.parse_args()
 
-
-    FORMAT = '%(asctime)s::%(name)s::%(levelname)s::%(message)s'
-    logging.basicConfig(level=logging.INFO, format=FORMAT, filename='testd.log')
-
+    logging.config.dictConfig(LogConfig)
 
     def handle_signal(signum, frame):
         logging.info(f'Signal {signum} is handling!')

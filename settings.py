@@ -24,7 +24,7 @@ LogConfig = {
         },
     },
     'loggers': {
-        'root': {
+        '': {
             'level': 'NOTSET',
             'handlers': ['rotate', 'console'],
         },
